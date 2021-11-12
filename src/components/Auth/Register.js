@@ -1,12 +1,42 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
+import firebase from '../../firebase'
 import{ Grid, Form, Segment, Button, Header, Message, Icon  } from 'semantic-ui-react'
 
 export default class Register extends Component {
 
-    handleChange = () =>{}
+    state = {
+        username:'',
+        email:'',
+        password:'',
+        passwordConfirmation:''
+    }
+
+    handleChange = (event) =>{
+        this.setState({ [event.target.name]: event.target.value})
+    }
+    handleSubmit = (event) =>{
+        event.preventDefault()
+        firebase
+            .auth()
+            .createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then(createUser =>{
+                console.log(createUser);
+            })
+            .catch(err =>{
+                console.log(err);
+            })
+    }
 
     render() {
+
+        const {
+            username,
+            email,
+            password,
+            passwordConfirmation
+        } = this.state
+
         return (
             <Grid textAlign="center" verticalAlign="middle" className="app">
                 <Grid.Column style={{maxWidth: 450}}>
@@ -20,7 +50,7 @@ export default class Register extends Component {
                             Register for Chat
                         </Icon>   
                     </Header>       
-                        <Form size="large">
+                        <Form size="large" onSubmit={this.handleSubmit}>
                             <Segment stacked>
                                 <Form.Input 
                                     fluid 
@@ -29,6 +59,7 @@ export default class Register extends Component {
                                     iconPosition="left" 
                                     placeholder="User Name" 
                                     onChange={this.handleChange} type="text"
+                                    value={username}
                                 />
                                 <Form.Input 
                                     fluid 
@@ -37,6 +68,7 @@ export default class Register extends Component {
                                     iconPosition="left" 
                                     placeholder="Email Address" 
                                     onChange={this.handleChange} type="email"
+                                    value={email}
                                 />
                                 <Form.Input 
                                     fluid 
@@ -45,6 +77,7 @@ export default class Register extends Component {
                                     iconPosition="left" 
                                     placeholder="Password" 
                                     onChange={this.handleChange} type="password"
+                                    value={password}
                                 />
                                 <Form.Input 
                                     fluid 
@@ -53,6 +86,7 @@ export default class Register extends Component {
                                     iconPosition="left" 
                                     placeholder="Password Confirmation" 
                                     onChange={this.handleChange} type="password"
+                                    value={passwordConfirmation}
                                 />
                                 <Button 
                                     color="orange" 
