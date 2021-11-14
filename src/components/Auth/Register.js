@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import firebase from '../../firebase'
-import{ Grid, Form, Segment, Button, Header, Message, Icon  } from 'semantic-ui-react'
+import { Grid, Form, Segment, Button, Header, Message, Icon  } from 'semantic-ui-react'
+import md5 from 'md5'
 
 export default class Register extends Component {
 
@@ -11,7 +12,8 @@ export default class Register extends Component {
         password:'',
         passwordConfirmation:'',
         errors:[],
-        loading:false
+        loading:false,
+        usersRef: firebase.database().ref('users')
     }
 
     isFormValid = () => {
@@ -60,14 +62,35 @@ export default class Register extends Component {
             .auth()
             .createUserWithEmailAndPassword(this.state.email, this.state.password)
             .then(createUser =>{
-                console.log(createUser);
-                this.setState({loading: false})
+                console.log(createUser)
+                createUser.user
+                .updateProfile({
+                    displayName: this.state.username,
+                    photoURL:`http://gravatar.com/avatar/${md5(createUser.user.email)}?d=identicon`
+                })
+                .then(() =>{
+                    this.saveUser(createUser).then(() =>{
+                        console.log('user saved')
+                    })
+                    
+                })
+                .catch(err =>{
+                    console.log(err);
+                    this.setState({errors: this.state.errors.concat(err), loading: false})
+                })
+                
             })
             .catch(err =>{
                 console.log(err);
                 this.setState({errors: this.state.errors.concat(err), loading: false})
             })
         }
+    }
+    saveUser = (createUser) => {
+        return this.state.usersRef.child(createUser.user.uid).set({
+            name:createUser.user.displayName,
+            avatar:createUser.user.photoURL
+        })
     }
 
     handleInputError = (errors, inputName) => {
