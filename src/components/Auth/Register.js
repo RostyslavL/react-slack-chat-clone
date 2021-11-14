@@ -10,7 +10,8 @@ export default class Register extends Component {
         email:'',
         password:'',
         passwordConfirmation:'',
-        errors:[]
+        errors:[],
+        loading:false
     }
 
     isFormValid = () => {
@@ -47,23 +48,30 @@ export default class Register extends Component {
         return (password.length < 6 || passwordConfirmation.length < 6) ? false : (password.length !== passwordConfirmation.length) ? false : true        
     }
     displayErrors = (errors) => errors.map((error, index) => <p key={index}>{error.message}</p>) 
-    
+
     handleChange = (event) =>{
         this.setState({ [event.target.name]: event.target.value})
     }
     handleSubmit = (event) =>{
+        event.preventDefault()
         if(this.isFormValid()){
-            event.preventDefault()
+            this.setState({errors: [], loading: true})
             firebase
             .auth()
             .createUserWithEmailAndPassword(this.state.email, this.state.password)
             .then(createUser =>{
                 console.log(createUser);
+                this.setState({loading: false})
             })
             .catch(err =>{
                 console.log(err);
+                this.setState({errors: this.state.errors.concat(err), loading: false})
             })
         }
+    }
+
+    handleInputError = (errors, inputName) => {
+        return errors.some(error => error.message.toLowerCase().includes(inputName)) ? 'error' : '' 
     }
 
     render() {
@@ -73,7 +81,8 @@ export default class Register extends Component {
             email,
             password,
             passwordConfirmation,
-            errors
+            errors,
+            loading
         } = this.state
 
         return (
@@ -97,7 +106,8 @@ export default class Register extends Component {
                                     icon="user" 
                                     iconPosition="left" 
                                     placeholder="User Name" 
-                                    onChange={this.handleChange} type="text"
+                                    onChange={this.handleChange} 
+                                    type="text"
                                     value={username}
                                 />
                                 <Form.Input 
@@ -106,8 +116,10 @@ export default class Register extends Component {
                                     icon="mail" 
                                     iconPosition="left" 
                                     placeholder="Email Address" 
-                                    onChange={this.handleChange} type="email"
+                                    onChange={this.handleChange} 
+                                    type="email"
                                     value={email}
+                                    className={this.handleInputError(errors, 'email')}
                                 />
                                 <Form.Input 
                                     fluid 
@@ -115,8 +127,10 @@ export default class Register extends Component {
                                     icon="lock" 
                                     iconPosition="left" 
                                     placeholder="Password" 
-                                    onChange={this.handleChange} type="password"
+                                    onChange={this.handleChange} 
+                                    type="password"
                                     value={password}
+                                    className={this.handleInputError(errors, 'password')}
                                 />
                                 <Form.Input 
                                     fluid 
@@ -124,10 +138,14 @@ export default class Register extends Component {
                                     icon="repeat" 
                                     iconPosition="left" 
                                     placeholder="Password Confirmation" 
-                                    onChange={this.handleChange} type="password"
+                                    onChange={this.handleChange} 
+                                    type="password"
                                     value={passwordConfirmation}
+                                    className={this.handleInputError(errors, 'password')}
                                 />
                                 <Button 
+                                    className={loading ? 'loading' : ''}
+                                    disabled={loading}
                                     color="orange" 
                                     fluid 
                                     size="large">
