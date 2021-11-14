@@ -112,7 +112,7 @@ export default class Register extends Component {
             <Grid textAlign="center" verticalAlign="middle" className="app">
                 <Grid.Column style={{maxWidth: 450}}>
                     <Header 
-                        as="h2" 
+                        as="h1" 
                         icon 
                         color="orange"
                         textAlign="center"
