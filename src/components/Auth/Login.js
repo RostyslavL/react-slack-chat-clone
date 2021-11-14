@@ -6,10 +6,8 @@ import { Grid, Form, Segment, Button, Header, Message, Icon  } from 'semantic-ui
 export default class Login extends Component {
 
     state = {
-        username:'',
         email:'',
         password:'',
-        passwordConfirmation:'',
         errors:[],
         loading:false,
     }
