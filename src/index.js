@@ -16,20 +16,23 @@ import {
   withRouter
 } from 'react-router-dom'
 import {roootReducer} from './reducers/index'
-import {setUser} from './actions/index'
+import {setUser,clearUser} from './actions/index'
 import Spinner from './Spinner'
 
 const store = createStore (roootReducer,composeWithDevTools())
 
 class Root extends React.Component {
   componentDidMount() {
-    firebase.auth().onAuthStateChanged(user => {
+    firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        // console.log(user);
-        this.props.setUser(user);
-        this.props.history.push("/");
+        // console.log(user)
+        this.props.setUser(user)
+        this.props.history.push('/')
+      } else {
+        this.props.history.push('/login')
+        this.props.clearUser()
       }
-    });
+    })
   }
 
   render() {
@@ -37,24 +40,24 @@ class Root extends React.Component {
       <Spinner />
     ) : (
       <Switch>
-        <Route exact path="/" component={App} />
-        <Route path="/login" component={Login} />
-        <Route path="/register" component={Register} />
+        <Route exact path='/' component={App} />
+        <Route path='/login' component={Login} />
+        <Route path='/register' component={Register} />
       </Switch>
-    );
+    )
   }
 }
 
 const mapStateFromProps = state => ({
   isLoading: state.user.isLoading
-});
+})
 
 const RootWithAuth = withRouter(
   connect(
     mapStateFromProps,
-    { setUser }
+    { setUser, clearUser }
   )(Root)
-);
+)
 
 ReactDOM.render(
   <Provider store={store}>
@@ -62,6 +65,6 @@ ReactDOM.render(
       <RootWithAuth />
     </Router>
   </Provider>,
-  document.getElementById("root")
-);
-registerServiceWorker();
+  document.getElementById('root')
+)
+registerServiceWorker()
