@@ -4,9 +4,20 @@ import firebase from '../../firebase'
 
 class UserPanel extends React.Component {
 
+    state = {
+        user:this.props.currentUser
+    }
+
+    componentWilRecieveProps(nextProps){
+        this.setState({user: nextProps.currentUser})
+    }
+
     dropdownOptions = () => [
         {
-            text:<span>Signed in as <strong>User</strong></span>,
+            text:
+            <span>Signed in as 
+                <strong>{this.state.user.displayName}</strong>
+            </span>,
             disabled:true,
             key:'user'
         },
@@ -49,7 +60,7 @@ class UserPanel extends React.Component {
                         as="h4"
                     >
                         <Dropdown trigger={
-                            <span>User</span>
+                            <span>{this.state.user.displayName}</span>
                         } options={this.dropdownOptions()}/>
                     </Header>
                 </Grid.Column>
@@ -57,4 +68,5 @@ class UserPanel extends React.Component {
         )
     }
 }
+
 export default UserPanel
