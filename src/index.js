@@ -25,40 +25,43 @@ class Root extends React.Component {
   componentDidMount() {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        //   console.log(user);
-        this.props.setUser(user)
-        this.props.history.push('/')
+        // console.log(user);
+        this.props.setUser(user);
+        this.props.history.push("/");
       }
-    })
+    });
   }
 
   render() {
-    return this.props.isLoading ? <Spinner/> : (
-        <Switch>
-            <Route exact path='/' component={App} />
-            <Route path='/login' component={Login} />
-            <Route path='/register' component={Register} />
-        </Switch>
-    )
+    return this.props.isLoading ? (
+      <Spinner />
+    ) : (
+      <Switch>
+        <Route exact path="/" component={App} />
+        <Route path="/login" component={Login} />
+        <Route path="/register" component={Register} />
+      </Switch>
+    );
   }
 }
 
-const mapStateFromProps  = (state) =>({
-    isLoading: state.user.isLoading
-})
+const mapStateFromProps = state => ({
+  isLoading: state.user.isLoading
+});
 
 const RootWithAuth = withRouter(
-    connect(mapStateFromProps, 
-        {setUser})
-        (Root)
-    )
+  connect(
+    mapStateFromProps,
+    { setUser }
+  )(Root)
+);
+
 ReactDOM.render(
-    <Provider store={store}>
-        <Router>
-        <RootWithAuth />
-        </Router> 
-    </Provider>
-  ,
-  document.getElementById('root')
-)
-registerServiceWorker()
+  <Provider store={store}>
+    <Router>
+      <RootWithAuth />
+    </Router>
+  </Provider>,
+  document.getElementById("root")
+);
+registerServiceWorker();
