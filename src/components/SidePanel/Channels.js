@@ -9,14 +9,26 @@ export default class Channels extends Component {
         channels:[],
         channelName:'',
         channelDetails:'',
-        channelRef: firebase.database().ref('channels'),
+        channelsRef: firebase.database().ref('channels'),
         modal:false
     }
 
-    addChannel = () => {
-        const {channelRef,channelName,channelDetails,user} = this.state
+    componentDidMount(){
+        this.addListeners()
+    }
 
-        const key = channelRef.push().key
+    addListeners = () =>{
+        let loadedChannels = []
+        this.state.channelsRef.on('child_added',  snap =>{
+            loadedChannels.push(snap.val())
+            this.setState({channels:loadedChannels})
+        })
+    }
+
+    addChannel = () => {
+        const {channelsRef,channelName,channelDetails,user} = this.state
+
+        const key = channelsRef.push().key
 
         const newChannel = {
             id:key,
@@ -27,7 +39,7 @@ export default class Channels extends Component {
                 avatar:user.photoURL
             }
         }
-        channelRef
+        channelsRef
         .child(key)
         .update(newChannel)
         .then(() => {
@@ -64,6 +76,19 @@ export default class Channels extends Component {
     }
     isFormValid = ({channelName,channelDetails}) => channelName && channelDetails
 
+    displayChannels = (channels) => (
+        channels.length > 0 && channels.map(channel => (
+            <Menu.Item
+                key={channel.id}
+                onClick={() => console.log(channel)}
+                name={channel.name}
+                style={{opacity:0.6}}
+            >
+            # {channel.name}
+            </Menu.Item>
+        ))
+    )
+    
     render() {
 
         const {channels, modal} = this.state
@@ -79,6 +104,7 @@ export default class Channels extends Component {
                         <Icon name="add" onClick={this.openModal}/>
                     </Menu.Item>
                     {/* channels */}
+                    {this.displayChannels(channels)}
                 </Menu.Menu>
                 {/* Add Channel modal: */}
                 <Modal basic open={modal} onClose={this.closeModal}>
