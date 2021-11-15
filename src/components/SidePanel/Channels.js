@@ -9,13 +9,7 @@ export default class Channels extends Component {
         channelDetails:'',
         modal:false
     }
-
-    closeModal = () =>{
-        this.setState({modal:false})
-    }
-    openModal = () =>{
-        this.setState({modal:true})
-    }
+    
     triggerModal = () =>{
         this.setState({modal:!this.state.modal})
     }
@@ -40,7 +34,7 @@ export default class Channels extends Component {
                     {/* channels */}
                 </Menu.Menu>
                 {/* Add Channel modal: */}
-                <Modal basic open={modal} onClose={this.closeModal}>
+                <Modal basic open={modal} onClose={this.triggerModal}>
                     <Modal.Header>Add A Channel</Modal.Header>
                     <Modal.Content>
                         <Form>

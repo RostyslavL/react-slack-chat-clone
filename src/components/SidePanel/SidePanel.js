@@ -13,8 +13,15 @@ export default class SidePanel extends Component {
                 inverted 
                 fixed="left" 
                 vertical 
-                style={{background: 'rgb(130, 71, 178)', fontSize: '1.2rem'}}
-            >
+                style={
+                    {
+                     background:'linear-gradient(rgba(63,71,111,1) 27%, rgba(252,70,107,1) 100%)',
+                     fontSize: '1.2rem',
+                     boxShadow: '10px 5px 20px 0px rgba(66, 68, 90, 1)',
+                     borderRadius:'20px'
+                    }
+                }   
+                >
                 <UserPanel currentUser={currentUser}/>
                 <Channels/>
             </Menu>
