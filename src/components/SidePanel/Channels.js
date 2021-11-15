@@ -70,12 +70,13 @@ export default class Channels extends Component {
         return (
             <React.Fragment>
                 <Menu.Menu style={{padding:'2rem 0'}}>
-                    <Menu.Item style={{cursor: 'pointer'}}>
-                        <span>
-                            <Icon name="exchange"/> Channels
+                    <Menu.Item style={{cursor: 'pointer'}} >
+                        <span onClick={this.openModal}>
+                            <Icon name="exchange" /> Channels
                         </span>
                         {' '}
-                        ({channels.length})  <Icon name="add" onClick={this.openModal}/>
+                        ({channels.length}) {' '}
+                        <Icon name="add" onClick={this.openModal}/>
                     </Menu.Item>
                     {/* channels */}
                 </Menu.Menu>
