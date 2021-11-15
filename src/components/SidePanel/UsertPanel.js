@@ -59,9 +59,10 @@ class UserPanel extends React.Component {
                         style={{padding: '1.2rem'}}  
                         as="h4"
                     >
-                        <Dropdown trigger={
-                            <span>{this.state.user.displayName}</span>
-                        } options={this.dropdownOptions()}/>
+                        <Dropdown 
+                            trigger={<span>{this.state.user.displayName}</span>} 
+                            options={this.dropdownOptions()}
+                        />
                     </Header>
                 </Grid.Column>
             </Grid>
