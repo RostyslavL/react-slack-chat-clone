@@ -15,7 +15,7 @@ class UserPanel extends React.Component {
     dropdownOptions = () => [
         {
             text:
-            <span>Signed in as 
+            <span>Signed in as {' '}
                 <strong>{this.state.user.displayName}</strong>
             </span>,
             disabled:true,
