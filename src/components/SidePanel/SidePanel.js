@@ -22,7 +22,7 @@ export default class SidePanel extends Component {
                 }   
                 >
                 <UserPanel currentUser={currentUser}/>
-                <Channels/>
+                <Channels currentUser={currentUser}/>
             </Menu>
         )
     }
