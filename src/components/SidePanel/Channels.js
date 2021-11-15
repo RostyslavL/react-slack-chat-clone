@@ -23,8 +23,8 @@ export default class Channels extends Component {
         const {channels, modal} = this.state
         return (
             <React.Fragment>
-                <Menu.Menu style={{paddingBottom: '2rem'}}>
-                    <Menu.Item>
+                <Menu.Menu style={{padding:'2rem 0'}}>
+                    <Menu.Item style={{cursor: 'pointer'}}>
                         <span>
                             <Icon name="exchange"/> Channels
                         </span>

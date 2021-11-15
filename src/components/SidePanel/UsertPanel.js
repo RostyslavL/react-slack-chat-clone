@@ -61,7 +61,8 @@ class UserPanel extends React.Component {
                         style={{padding: '1.2rem'}}  
                         as="h4"
                     >
-                        <Dropdown 
+                        <Dropdown
+                            style={{padding: '1rem', marginTop:'1rem'}} 
                             trigger={
                             <span>
                                 <Image src={user.photoURL} spaced="right" avatar/>
