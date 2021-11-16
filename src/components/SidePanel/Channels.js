@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import firebase from '../../firebase'
 import {Menu,Icon,Modal, Form, Input, Button} from 'semantic-ui-react'
+import {connect} from 'react-redux'
+import {setCurrentChannel} from '../../actions/index'
 
-export default class Channels extends Component {
+class Channels extends Component {
 
     state = {
         user:this.props.currentUser,
@@ -74,13 +76,18 @@ export default class Channels extends Component {
             this.addChannel()
         }
     }
+
+    changeChannel = (channel) =>{
+        this.props.setCurrentChannel(channel)
+    }
+
     isFormValid = ({channelName,channelDetails}) => channelName && channelDetails
 
     displayChannels = (channels) => (
         channels.length > 0 && channels.map(channel => (
             <Menu.Item
                 key={channel.id}
-                onClick={() => console.log(channel)}
+                onClick={() => this.changeChannel(channel)}
                 name={channel.name}
                 style={{opacity:0.6}}
             >
@@ -142,3 +149,5 @@ export default class Channels extends Component {
         )
     }
 }
+
+export default connect(null,{setCurrentChannel})(Channels)
