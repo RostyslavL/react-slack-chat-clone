@@ -17,6 +17,10 @@ class MessageForm extends React.Component {
     this.setState({ [event.target.name]: event.target.value })
   }
 
+  uploadFile =(file,metadata) =>{
+    console.log(file,metadata)
+  }
+
   createMessage = () => {
     const message = {
       timestamp: firebase.database.ServerValue.TIMESTAMP,
@@ -103,6 +107,7 @@ class MessageForm extends React.Component {
           <FileModal
             modal={modal}
             closeModal={this.closeModal}
+            uploadFile={this.uploadFile}
           />
         </Button.Group>
       </Segment>
