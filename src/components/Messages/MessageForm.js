@@ -1,6 +1,6 @@
-import React from 'react';
-import firebase from '../../firebase';
-import { Segment, Button, Input } from 'semantic-ui-react';
+import React from 'react'
+import firebase from '../../firebase'
+import { Segment, Button, Input } from 'semantic-ui-react'
 
 class MessageForm extends React.Component {
   state = {
@@ -9,11 +9,11 @@ class MessageForm extends React.Component {
     user: this.props.currentUser,
     loading: false,
     errors: []
-  };
+  }
 
   handleChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
+    this.setState({ [event.target.name]: event.target.value })
+  }
 
   createMessage = () => {
     const message = {
@@ -24,39 +24,39 @@ class MessageForm extends React.Component {
         avatar: this.state.user.photoURL
       },
       content: this.state.message
-    };
-    return message;
-  };
+    }
+    return message
+  }
 
   sendMessage = () => {
-    const { messagesRef } = this.props;
-    const { message, channel } = this.state;
+    const { messagesRef } = this.props
+    const { message, channel } = this.state
 
     if (message) {
-      this.setState({ loading: true });
+      this.setState({ loading: true })
       messagesRef
         .child(channel.id)
         .push()
         .set(this.createMessage())
         .then(() => {
-          this.setState({ loading: false, message: '', errors: [] });
+          this.setState({ loading: false, message: '', errors: [] })
         })
         .catch(err => {
-          console.error(err);
+          console.error(err)
           this.setState({
             loading: false,
             errors: this.state.errors.concat(err)
-          });
-        });
+          })
+        })
     } else {
       this.setState({
         errors: this.state.errors.concat({ message: 'Error, ther is no massage provided!Add a message' })
-      });
+      })
     }
-  };
+  }
 
   render() {
-    const { errors, message, loading } = this.state;
+    const { errors, message, loading } = this.state
 
     return (
       <Segment className='message__form'>
@@ -92,8 +92,8 @@ class MessageForm extends React.Component {
           />
         </Button.Group>
       </Segment>
-    );
+    )
   }
 }
 
-export default MessageForm;
+export default MessageForm

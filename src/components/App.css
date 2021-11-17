@@ -23,3 +23,8 @@ body,
     right: 1rem;
     z-index: 200;
 }
+/* Message.js */
+.message__self{
+    border-left: 5px solid #1ab3b3 !important;
+    padding-left: 10px;
+}
