@@ -54,7 +54,7 @@ export default class Messages extends Component {
         return (
             <React.Fragment>
                <MessagesHeader/> 
-               <Segment>
+               <Segment style={{boxShadow: '10px 5px 20px 0px rgba(66, 68, 90, 1)'}}>
                    <Comment.Group className='messages'>
                    {this.displayMessages(messages)}
                    </Comment.Group>
