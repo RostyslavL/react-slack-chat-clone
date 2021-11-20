@@ -47,7 +47,8 @@ class Messages extends React.Component {
       }
       return acc
     },[])
-    const numUniqueUsers =`${uniqueUsers.length} users` 
+    const plural = uniqueUsers.length > 1 || uniqueUsers.length === 0 ? 'users' : 'user'
+    const numUniqueUsers =`${uniqueUsers.length} ${plural}` 
     this.setState({numUniqueUsers})
   }
 
