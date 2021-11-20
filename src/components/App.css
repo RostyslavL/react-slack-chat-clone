@@ -8,6 +8,11 @@ body,
     padding: 1rem;
 }
 
+/* SidePAnel.js */
+.menu{
+    padding-bottom: 2rem;
+}
+
 /* Messages.js */
 .messages{
     height: 500px;
