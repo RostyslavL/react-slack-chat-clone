@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import firebase from '../../firebase'
 import {Menu,Icon,Modal, Form, Input, Button} from 'semantic-ui-react'
 import {connect} from 'react-redux'
-import {setCurrentChannel} from '../../actions/index'
+import {setCurrentChannel, setPrivateChannel} from '../../actions/index'
 
 class Channels extends Component {
 
@@ -101,6 +101,7 @@ class Channels extends Component {
     changeChannel = (channel) =>{
         this.setActiveChannel(channel)
         this.props.setCurrentChannel(channel)
+        this.props.setPrivateChannel(false)
     }
 
     isFormValid = ({channelName,channelDetails}) => channelName && channelDetails
@@ -173,4 +174,4 @@ class Channels extends Component {
     }
 }
 
-export default connect(null,{setCurrentChannel})(Channels)
+export default connect(null,{setCurrentChannel, setPrivateChannel})(Channels)
