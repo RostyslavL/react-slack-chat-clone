@@ -126,6 +126,7 @@ class Channels extends Component {
     openModal = () =>{
         this.setState({modal:true})
     }
+    
     closeModal = () =>{
         this.setState({modal:false})
     }
@@ -133,12 +134,14 @@ class Channels extends Component {
     handleChange = (event) => {
         this.setState({[event.target.name]: event.target.value})
     }
+
     handleSubmit = (event) => {
         event.preventDefault()
         if(this.isFormValid(this.state)){
             this.addChannel()
         }
     }
+
     setActiveChannel = (channel) =>{
         this.setState({activeChannel: channel.id})
     }
