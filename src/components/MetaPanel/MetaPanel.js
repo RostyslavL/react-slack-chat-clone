@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
-import {Segment, Icon, Accordion, Header} from 'semantic-ui-react'
+import {Segment, Icon, Accordion, Header, Image} from 'semantic-ui-react'
 
 export default class MetaPanel extends Component {
 
     state = {
         activeIndex:0,
         privateChannel:this.props.isPrivateChannel,
+        channel:this.props.currentChannel,
     }
 
     setActiveIndex = (event, titleProps) => {
@@ -17,14 +18,14 @@ export default class MetaPanel extends Component {
 
     render() {
 
-        const {activeIndex, privateChannel} = this.state
+        const {activeIndex, privateChannel, channel} = this.state
 
         if(privateChannel) return null
-        
+
         return (
-            <Segment>
+            <Segment loading={!channel}>
                <Header as="h3" attached="top"> 
-                    About # Channel
+                    About # {channel && channel.name}
                </Header>
                {/* Segment 1 */}
                <Accordion styled attached="true">
@@ -38,7 +39,7 @@ export default class MetaPanel extends Component {
                         Channel Details
                    </Accordion.Title>
                    <Accordion.Content active={activeIndex === 0}>
-                        Details
+                    {channel && channel.details}
                    </Accordion.Content>
                    {/* Segment 2 */}
                    <Accordion.Title
@@ -64,7 +65,13 @@ export default class MetaPanel extends Component {
                         Created By
                    </Accordion.Title>
                    <Accordion.Content active={activeIndex === 2}>
-                        creator
+                       <Header as="h3">
+                            <Image 
+                                circular
+                                src={channel && channel.createdBy.avatar}
+                            />
+                            {channel && channel.createdBy.name}
+                       </Header>
                    </Accordion.Content>
                </Accordion>
             </Segment>
