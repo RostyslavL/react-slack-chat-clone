@@ -19,7 +19,8 @@ export default class SidePanel extends Component {
                     {
                      background:'linear-gradient(rgba(63,71,111,1) 27%, rgba(252,70,107,1) 100%)',
                      fontSize: '1.2rem',
-                     boxShadow: '10px 5px 20px 0px rgba(66, 68, 90, 1)'
+                     boxShadow: '10px 5px 20px 0px rgba(66, 68, 90, 1)',
+                     overflowY: 'scroll'
                     }
                 }   
                 >
