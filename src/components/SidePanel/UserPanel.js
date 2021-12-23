@@ -1,12 +1,16 @@
 import React from 'react'
 import { Grid,Header,Icon,Dropdown,Image, Modal, Input , Button} from 'semantic-ui-react'
 import firebase from '../../firebase'
+import AvatarEditor from 'react-avatar-editor'
 
 class UserPanel extends React.Component {
 
     state = {
         user:this.props.currentUser,
         modal:false,
+        previewImage:'',
+        croppedImage:'',
+        blob:''
     }
 
     componentWilRecieveProps(nextProps){
@@ -39,15 +43,39 @@ class UserPanel extends React.Component {
             key:'signout'
         }
     ]
-    handleSignOut = () =>{
+    handleSignOut = () => {
         firebase 
             .auth()
             .signOut()
             .then(() => console.log('User Signed out'))
     }
+
+    handleChange = (event) => {
+        const file = event.target.files[0]
+        const reader = new FileReader()
+        if(file) {
+            reader.readAsDataURL(file)
+            reader.addEventListener('load', () => {
+                this.setState({previewImage:reader.result})
+            })
+        }
+    }
+
+    handlePreviewImage = () => {
+        if(this.avatarEditor){
+            this.avatarEditor.getImageScaledToCanvas().toBlob(blob => {
+                let imageUrl = URL.createObjectURL(blob)
+                this.setState({
+                    croppedImage:imageUrl,
+                    blob
+                })
+            })
+        }
+    }
+
     render() {
 
-        const {user, modal} = this.state
+        const {user, modal, previewImage, croppedImage} = this.state
         const {primaryColor, secondaryColor} = this.props
 
         return (
@@ -94,6 +122,7 @@ class UserPanel extends React.Component {
                                 type="file" 
                                 label="New Avatar"
                                 name="previewImage"
+                                onChange={this.handleChange}
                             />
                                 <Grid 
                                     centered 
@@ -102,27 +131,46 @@ class UserPanel extends React.Component {
                                 >
                                     <Grid.Row centered>
                                     <Grid.Column className="ui center aligned grid">
-                                        {/* Image preview */}
+                                        {previewImage && (
+                                            <AvatarEditor 
+                                                image={previewImage}
+                                                width={200}
+                                                height={200}
+                                                border={60}
+                                                scale={1.5}
+                                                ref={node => (this.avatarEditor = node)}
+                                            />
+                                        )}
                                     </Grid.Column>
                                     <Grid.Column>
-                                        {/* Cropped Image preview */}
+                                        {croppedImage && (
+                                            <Image 
+                                                style={{ margin:'4em auto'}} 
+                                                width={160} 
+                                                height={160}
+                                                src={croppedImage}
+                                            />
+                                        )}
                                     </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
                         </Modal.Content>
                         <Modal.Actions>
-                        <Button 
-                            color='green' 
-                            inverted
-                            onClick={this.handleSaveColor}
-                        >
-                            <Icon name='save'/> Change Avatar
-                        </Button>
+                        {croppedImage && 
+                            (
+                            <Button 
+                                color='green' 
+                                inverted
+                                onClick={this.handleSaveColor}
+                                >
+                                <Icon name='save'/> Change Avatar
+                            </Button>
+                        )}
                         <Button 
                             color='blue' 
                             inverted
                         >
-                            <Icon name='image'/> Preview
+                            <Icon name='image' onClick={this.handlePreviewImage}/> Preview
                         </Button>
                         <Button 
                             color='red' 
