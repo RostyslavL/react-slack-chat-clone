@@ -6,73 +6,114 @@ import AvatarEditor from 'react-avatar-editor'
 class UserPanel extends React.Component {
 
     state = {
-        user:this.props.currentUser,
-        modal:false,
-        previewImage:'',
-        croppedImage:'',
-        blob:''
-    }
-
-    componentWilRecieveProps(nextProps){
-        this.setState({user: nextProps.currentUser})
-    }
-
-    openModal = () => {
-        this.setState({modal:true})        
-    }
-
-    closeModal = () => {
-        this.setState({modal:false})
-    }
-
-    dropdownOptions = () => [
-        {
-            text:
-            <span>Signed in as {' '}
-                <strong>{this.state.user.displayName}</strong>
-            </span>,
-            disabled:true,
-            key:'user'
-        },
-        {
-            text:<span onClick={this.openModal}>Change Avatar</span>,
-            key:'avatar'
-        },
-        {
-            text:<span onClick={this.handleSignOut}>Sign Out</span>,
-            key:'signout'
+        user: this.props.currentUser,
+        modal: false,
+        previewImage: '',
+        croppedImage: '',
+        blob: null,
+        uploadedCroppedImage: '',
+        storageRef: firebase.storage().ref(),
+        userRef: firebase.auth().currentUser,
+        usersRef: firebase.database().ref('users'),
+        metadata: {
+          contentType: 'image/jpeg'
         }
-    ]
-    handleSignOut = () => {
-        firebase 
-            .auth()
-            .signOut()
-            .then(() => console.log('User Signed out'))
-    }
-
-    handleChange = (event) => {
+      }
+    
+      openModal = () => this.setState({ modal: true })
+    
+      closeModal = () => this.setState({ modal: false })
+    
+      dropdownOptions = () => [
+        {
+          key: 'user',
+          text: (
+            <span>
+              Signed in as <strong>{this.state.user.displayName}</strong>
+            </span>
+          ),
+          disabled: true
+        },
+        {
+          key: 'avatar',
+          text: <span onClick={this.openModal}>Change Avatar</span>
+        },
+        {
+          key: 'signout',
+          text: <span onClick={this.handleSignout}>Sign Out</span>
+        }
+      ]
+    
+      uploadCroppedImage = () => {
+        const { storageRef, userRef, blob, metadata } = this.state
+    
+        storageRef
+          .child(`avatars/user-${userRef.uid}`)
+          .put(blob, metadata)
+          .then(snap => {
+            snap.ref.getDownloadURL().then(downloadURL => {
+              this.setState({ uploadedCroppedImage: downloadURL }, () =>
+                this.changeAvatar()
+              )
+            })
+          })
+      }
+    
+      changeAvatar = () => {
+        this.state.userRef
+          .updateProfile({
+            photoURL: this.state.uploadedCroppedImage
+          })
+          .then(() => {
+            console.log('PhotoURL updated')
+            this.closeModal()
+          })
+          .catch(err => {
+            console.error(err)
+          })
+    
+        this.state.usersRef
+          .child(this.state.user.uid)
+          .update({ avatar: this.state.uploadedCroppedImage })
+          .then(() => {
+            console.log('User avatar updated')
+          })
+          .catch(err => {
+            console.error(err)
+          })
+      }
+    
+      handleChange = event => {
         const file = event.target.files[0]
         const reader = new FileReader()
-        if(file) {
-            reader.readAsDataURL(file)
-            reader.addEventListener('load', () => {
-                this.setState({previewImage:reader.result})
-            })
+    
+        if (file) {
+          reader.readAsDataURL(file)
+          reader.addEventListener('load', () => {
+            this.setState({ previewImage: reader.result })
+          })
         }
-    }
-
-    handlePreviewImage = () => {
-        if(this.avatarEditor){
-            this.avatarEditor.getImageScaledToCanvas().toBlob(blob => {
-                let imageUrl = URL.createObjectURL(blob)
-                this.setState({
-                    croppedImage:imageUrl,
-                    blob
-                })
+      }
+    
+      handleCropImage = () => {
+        if (this.avatarEditor) {
+          this.avatarEditor.getImageScaledToCanvas().toBlob(blob => {
+            let imageUrl = URL.createObjectURL(blob)
+            this.setState({
+              croppedImage: imageUrl,
+              blob
             })
+          })
         }
-    }
-
+      }
+    
+      handleSignout = () => {
+        firebase
+          .auth()
+          .signOut()
+          .then(() => console.log('signed out!'))
+      }
+      
     render() {
 
         const {user, modal, previewImage, croppedImage} = this.state
@@ -84,10 +125,10 @@ class UserPanel extends React.Component {
                     <Grid.Row style={{padding: '1.2rem', margin:0}}>
                         <Header 
                             inverted 
-                            floated="left" 
-                            as="h2"
+                            floated='left' 
+                            as='h2'
                             >
-                            <Icon name="code"/>
+                            <Icon name='code'/>
                             {/* App Header */}
                             <Header.Content>
                                 DevChat
@@ -97,13 +138,13 @@ class UserPanel extends React.Component {
                     <Header
                         inverted 
                         style={{padding: '1.2rem'}}  
-                        as="h4"
+                        as='h4'
                     >
                         <Dropdown
                             style={{padding: '1rem', marginTop:'1rem'}} 
                             trigger={
                             <span>
-                                <Image src={user.photoURL} spaced="right" avatar/>
+                                <Image src={user.photoURL} spaced='right' avatar/>
                                 {user.displayName}
                             </span>
                         } 
@@ -119,9 +160,9 @@ class UserPanel extends React.Component {
                         <Modal.Content>
                             <Input 
                                 fluid 
-                                type="file" 
-                                label="New Avatar"
-                                name="previewImage"
+                                type='file' 
+                                label='New Avatar'
+                                name='previewImage'
                                 onChange={this.handleChange}
                             />
                                 <Grid 
@@ -130,7 +171,7 @@ class UserPanel extends React.Component {
                                     columns={2}
                                 >
                                     <Grid.Row centered>
-                                    <Grid.Column className="ui center aligned grid">
+                                    <Grid.Column className='ui center aligned grid'>
                                         {previewImage && (
                                             <AvatarEditor 
                                                 image={previewImage}
@@ -156,28 +197,21 @@ class UserPanel extends React.Component {
                                 </Grid>
                         </Modal.Content>
                         <Modal.Actions>
-                        {croppedImage && 
-                            (
-                            <Button 
-                                color='green' 
-                                inverted
-                                onClick={this.handleSaveColor}
-                                >
-                                <Icon name='save'/> Change Avatar
+                          {croppedImage && (
+                            <Button
+                              color='green'
+                              inverted
+                              onClick={this.uploadCroppedImage}
+                            >
+                              <Icon name='save' /> Change Avatar
                             </Button>
-                        )}
-                        <Button 
-                            color='blue' 
-                            inverted
-                        >
-                            <Icon name='image' onClick={this.handlePreviewImage}/> Preview
-                        </Button>
-                        <Button 
-                            color='red' 
-                            inverted 
-                            onClick={this.closeModal}>
-                            <Icon name='remove'/> Cancel
-                        </Button>
+                          )}
+                          <Button color='blue' inverted onClick={this.handleCropImage}>
+                            <Icon name='image' /> Preview
+                          </Button>
+                          <Button color='red' inverted onClick={this.closeModal}>
+                            <Icon name='remove' /> Cancel
+                          </Button>
                         </Modal.Actions>
                     </Modal>
                 </Grid.Column>
@@ -187,3 +221,4 @@ class UserPanel extends React.Component {
 }
 
 export default UserPanel
+
