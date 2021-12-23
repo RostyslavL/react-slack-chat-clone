@@ -9,8 +9,8 @@ class ColorPanel extends Component {
 
     state = {
         modal:false,
-        primary:'',
-        secondary:'',
+        primary:'linear-gradient(rgba(63,71,111,1) 27%, rgba(252,70,107,1) 100%)',
+        secondary:'#eee',
         usersRef: firebase.database().ref('users'),
         user:this.props.currentUser,
         userColors:[]
@@ -35,8 +35,7 @@ class ColorPanel extends Component {
     }
     
     openModal = () => {
-        this.setState({modal:true})
-        
+        this.setState({modal:true})        
     }
 
     closeModal = () => {
