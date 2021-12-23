@@ -6,6 +6,7 @@ import {setUserPosts} from '../../actions'
 import MessagesHeader from './MessagesHeader'
 import MessageForm from './MessageForm'
 import Message from './Message'
+import Typing from './Typing'
 
 class Messages extends React.Component {
   state = {
@@ -197,6 +198,12 @@ class Messages extends React.Component {
         <Segment>
           <Comment.Group className='messages'>
             {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
+            <div style={{display:'flex', alignItems: 'center'}}>
+              <div className="user__typing">
+                user is typing
+              </div>
+            </div>
+            <Typing />
           </Comment.Group>
         </Segment>
 
