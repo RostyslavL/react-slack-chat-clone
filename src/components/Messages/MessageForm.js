@@ -3,8 +3,9 @@ import uuidv4 from 'uuid/v4'
 import firebase from '../../firebase'
 import { Segment, Button, Input } from 'semantic-ui-react'
 import ProgressBar from './ProgressBar'
-
 import FileModal from './FileModal'
+import {Picker, emojiIndex} from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
 
 class MessageForm extends React.Component {
   state = {
@@ -19,6 +20,7 @@ class MessageForm extends React.Component {
     loading: false,
     errors: [],
     modal: false,
+    emojiPicker: false,
   }
 
   openModal = () => this.setState({ modal: true })
@@ -164,18 +166,62 @@ class MessageForm extends React.Component {
     }
   }
 
+  handleTogglePicker = () => {
+    this.setState({emojiPicker: !this.state.emojiPicker})
+  }
+
+  handlerAddEmojiPicker = (emoji) => {
+    const oldMessage = this.state.message
+    const newMessage = this.colonToUnicode(`${oldMessage} ${emoji.colons}`)
+    this.setState({
+      message: newMessage,
+      emojiPicker:false
+    })
+    setTimeout(() => this.mesageInputRef.focus(), 0)
+  }
+
+  colonToUnicode = (message) => {
+    return message.replace(/:[A-Za-z0-9_+-]+:/g, x => {
+      x = x.replace(/:/g, '')
+      let emoji = emojiIndex.emojis[x]
+      if(typeof emoji !== 'undefined') {
+        let unicode = emoji.native
+          if(typeof unicode !== 'undefined') {
+            return unicode
+          }
+      }
+      x = ':' + x + ':'
+    })
+  }
+
   render() {
-    const { errors, message, loading, modal,percentUploaded, uploadState } = this.state
+    const { errors, message, loading, modal,percentUploaded, uploadState, emojiPicker } = this.state
 
     return (
       <Segment className='message__form'>
+        {emojiPicker && (
+          <Picker
+            set="google"
+            className="emojipicker"
+            title="Choose your Emoji"
+            emoji="point_up"
+            onSelect={this.handlerAddEmojiPicker}
+          />
+        )}
         <Input
           fluid
           name='message'
           onChange={this.handleChange}
           value={message}
           style={{ marginBottom: '0.7em' }}
-          label={<Button icon={'add'} />}
+          ref={node => (this.mesageInputRef = node)}
+          label={
+            <Button 
+              icon={emojiPicker ? 'close' : 'add'} 
+              content={emojiPicker ? 'Close' : null} 
+              onClick={this.handleTogglePicker}
+            />
+          }
           labelPosition='left'
           className={
             errors.some(error => error.message.includes('message'))
