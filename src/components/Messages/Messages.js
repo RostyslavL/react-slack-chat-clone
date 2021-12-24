@@ -40,15 +40,15 @@ class Messages extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.mesageEnd){
+    if(this.messagesEnd){
       this.scrollToBottom()
     }
   }
 
   scrollToBottom = () => {
-    this.mesageEnd.scrollIntoView({behavior:'smooth'})
+    this.messagesEnd.scrollIntoView({behavior:'smooth'})
   }
-
+  
   addListeners = channelId => {
     this.addMessageListener(channelId)
     this.addTypingListener(channelId)
