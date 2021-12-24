@@ -7,6 +7,7 @@ import MessagesHeader from './MessagesHeader'
 import MessageForm from './MessageForm'
 import Message from './Message'
 import Typing from './Typing'
+import Skeleton from './Skeleton'
 
 class Messages extends React.Component {
   state = {
@@ -25,7 +26,8 @@ class Messages extends React.Component {
     isChannelStarred: false,
     typingRef:firebase.database().ref('typing'),
     connectedRef:firebase.database().ref('.info/connected'),
-    typingUsers:[]
+    typingUsers:[],
+
   }
 
   componentDidMount() {
@@ -233,6 +235,15 @@ class Messages extends React.Component {
     ))
   )
 
+  displayMessageSkeleton = loading =>
+    loading ? (
+      <React.Fragment>
+        {[...Array(10)].map((_, i) => (
+          <Skeleton key={i} />
+        ))}
+      </React.Fragment>
+    ) : null
+
   render() {
     const { 
       messagesRef, 
@@ -245,7 +256,8 @@ class Messages extends React.Component {
       searchLoading,
       privateChannel,
       isChannelStarred,
-      typingUsers
+      typingUsers,
+      messagesLoading
     } = this.state
 
     return (
@@ -260,13 +272,14 @@ class Messages extends React.Component {
           handleStar={this.handleStar}          
         />
 
-        <Segment>
-          <Comment.Group className='messages'>
-            {searchTerm ? this.displayMessages(searchResults) : this.displayMessages(messages)}
+        <Segment>     
+          <Comment.Group className="messages">
+            {this.displayMessageSkeleton(messagesLoading)}
+            {searchTerm
+              ? this.displayMessages(searchResults)
+              : this.displayMessages(messages)}
             {this.displayTypingUsers(typingUsers)}
-            <div ref={node => (this.mesageEnd = node)}>
-
-            </div>
+            <div ref={node => (this.messagesEnd = node)} />
           </Comment.Group>
         </Segment>
 
