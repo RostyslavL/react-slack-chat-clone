@@ -22,6 +22,10 @@ class ColorPanel extends Component {
         }
     }
 
+    componentWillUnmount(){
+        this.removeListener()
+    }
+
     addListener = (userId) => {
         let userColors = []
         this.state.usersRef
@@ -79,6 +83,10 @@ class ColorPanel extends Component {
             </React.Fragment>
         ))
     )
+
+    removeListener = () => {
+        this.state.usersRef.child(`${this.state.user.uid}/colors`).off()
+    }
 
     render() {
 
